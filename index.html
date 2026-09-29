@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estudo Tech Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f6f3; --surface:#ffffff; --surface-2:#f0eee9; --text:#1d1c1a; --muted:#6b6862;
+  --border:#e3e0d9; --accent:#2f5d8a; --accent-soft:#e3ecf5; --ok:#2e7d4f; --ok-soft:#e2f2e8;
+  --err:#a8322a; --err-soft:#f8e4e1;
+  --f1:#2f5d8a; --f2:#8a5a2f; --f3:#5a2f8a; --f4:#2f7a6a; --f5:#8a2f4a;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151515; --surface:#1e1e1d; --surface-2:#262624; --text:#ecebe8; --muted:#a19e97;
+    --border:#34332f; --accent:#7fb0e0; --accent-soft:#1f2d3b; --ok:#6fcf97; --ok-soft:#1b3024;
+    --err:#f0958c; --err-soft:#3a201e;
+    --f1:#7fb0e0; --f2:#e0b07f; --f3:#b99be6; --f4:#7fd0bf; --f5:#e68fa8;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151515; --surface:#1e1e1d; --surface-2:#262624; --text:#ecebe8; --muted:#a19e97;
+  --border:#34332f; --accent:#7fb0e0; --accent-soft:#1f2d3b; --ok:#6fcf97; --ok-soft:#1b3024;
+  --err:#f0958c; --err-soft:#3a201e;
+  --f1:#7fb0e0; --f2:#e0b07f; --f3:#b99be6; --f4:#7fd0bf; --f5:#e68fa8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 Inter,system-ui,sans-serif}
+a{color:var(--accent)}
+.layout{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--border);background:var(--surface);padding:20px 16px}
+aside h1{font:600 18px/1.3 "Source Serif 4",serif;margin:0 0 4px}
+aside .sub{color:var(--muted);font-size:12px;margin-bottom:14px}
+.progress{height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden;margin:6px 0 4px}
+.progress>i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.ptext{font-size:12px;color:var(--muted)}
+#search{width:100%;margin:14px 0 10px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:14px}
+nav .fase{margin:14px 0 4px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+nav a{display:flex;justify-content:space-between;gap:8px;padding:5px 8px;border-radius:6px;color:var(--text);text-decoration:none;font-size:13.5px}
+nav a:hover{background:var(--surface-2)}
+nav a small{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+nav a.done small{color:var(--ok)}
+.tools{display:flex;gap:6px;margin-top:18px;flex-wrap:wrap}
+button{font:inherit;font-size:12.5px;padding:6px 10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:6px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+main{padding:32px 40px 80px;max-width:920px;width:100%}
+.hero h2{font:600 30px/1.2 "Source Serif 4",serif;margin:0 0 8px}
+.hero p{color:var(--muted);margin:0 0 18px;max-width:680px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px}
+.stat b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.fase-sec{margin-top:48px;scroll-margin-top:16px}
+.fase-head{border-left:4px solid var(--fc);padding-left:14px;margin-bottom:18px}
+.fase-head .tag{font-size:12px;font-weight:700;color:var(--fc);text-transform:uppercase;letter-spacing:.06em}
+.fase-head h2{font:600 26px/1.25 "Source Serif 4",serif;margin:2px 0 6px}
+.fase-head p{margin:0;color:var(--muted)}
+.disc{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin:16px 0;scroll-margin-top:16px}
+.disc>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.disc>summary::-webkit-details-marker{display:none}
+.disc>summary h3{margin:0;font-size:17px}
+.disc>summary .meta{font-size:12px;color:var(--muted);white-space:nowrap}
+.disc>summary .chev{transition:transform .2s;color:var(--muted)}
+.disc[open]>summary .chev{transform:rotate(90deg)}
+.disc-body{padding:0 18px 18px;border-top:1px solid var(--border)}
+.resumo{margin:14px 0;color:var(--muted)}
+.topic{border-top:1px dashed var(--border);padding:14px 0}
+.topic:first-of-type{border-top:0}
+.topic-h{display:flex;gap:10px;align-items:flex-start}
+.topic-h input{margin-top:5px;width:17px;height:17px;accent-color:var(--ok);flex:none}
+.topic-h h4{margin:0;font-size:15.5px}
+.topic.done h4{color:var(--ok)}
+.topic .c{margin:6px 0 0 27px}
+.topic .c p{margin:6px 0}
+.topic ul{margin:6px 0 0 27px;padding-left:18px}
+.topic li{margin:2px 0}
+.box{margin-top:14px;padding:12px 14px;border-radius:8px;background:var(--surface-2)}
+.box h5{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.box ul{margin:0;padding-left:18px}
+.box.pratica{background:var(--accent-soft)}
+.refs li{margin:3px 0;font-size:14px}
+.note{font-size:13px;color:var(--muted);border-left:3px solid var(--border);padding-left:10px;margin:0 0 18px}
+.quiz details{margin:6px 0;padding:6px 0;border-bottom:1px solid var(--border)}
+.quiz details:last-child{border-bottom:0}
+.quiz summary{cursor:pointer;font-weight:500}
+.quiz details p{margin:6px 0 0;color:var(--muted)}
+textarea{width:100%;min-height:90px;margin-top:6px;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:14px;resize:vertical}
+.challenge{margin-top:16px;padding:14px 16px;border:1px solid var(--fc);border-radius:12px;background:var(--surface)}
+.challenge h4{margin:0 0 6px;color:var(--fc)}
+.challenge ol{margin:6px 0 0;padding-left:20px}
+.train{margin-top:10px}
+#gsearch{width:100%;max-width:420px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:14px}
+.g-letters{display:flex;flex-wrap:wrap;gap:4px;margin:12px 0 4px}
+.g-letters a{min-width:28px;text-align:center;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);text-decoration:none;font-size:13px}
+.gloss{margin:0}
+.g-letter{font:600 20px/1.2 "Source Serif 4",serif;color:var(--accent);margin:22px 0 4px;padding-bottom:4px;border-bottom:1px solid var(--border);scroll-margin-top:16px}
+.g-item{padding:9px 0;border-bottom:1px dashed var(--border)}
+.g-item dt{font-weight:600}
+.g-item dd{margin:2px 0 0}
+.g-links{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.g-empty{color:var(--muted);margin-top:14px}
+.fc{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px}
+.fc-box{width:100%;max-width:640px;max-height:100%;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px 22px;outline:none}
+.fc-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.fc-top h2{margin:0;font:600 20px/1.3 "Source Serif 4",serif}
+.fc-help{color:var(--muted);font-size:14px;margin:8px 0 14px}
+.fc-field{display:block;font-size:13px;font-weight:500;margin:10px 0}
+.fc-field select{display:block;width:100%;margin-top:4px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:14px}
+.fc-sum{font-size:13px;color:var(--muted);margin-top:12px;min-height:1.6em}
+.fc-meta{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);margin-top:12px}
+.fc-bar{height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden;margin:6px 0 4px}
+.fc-bar>i{display:block;height:100%;background:var(--accent)}
+.fc-q{font:600 20px/1.4 "Source Serif 4",serif;margin:16px 0 8px}
+.fc-a{border-top:1px solid var(--border);margin-top:14px;padding-top:12px}
+.fc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.fc-actions button{font-size:14px;padding:9px 14px}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:600}
+.btn-ok{background:var(--ok-soft);border-color:var(--ok);color:var(--text)}
+.btn-err{background:var(--err-soft);border-color:var(--err);color:var(--text)}
+kbd{font:11px/1 ui-monospace,monospace;padding:2px 5px;margin-left:6px;border:1px solid currentColor;border-radius:4px;opacity:.7}
+@media (hover:none){kbd{display:none}}
+.hidden{display:none!important}
+mark{background:#ffe58a;color:#1d1c1a;border-radius:2px}
+#menuBtn{display:none}
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr}
+  aside{position:fixed;inset:0 auto 0 0;width:86%;max-width:320px;z-index:20;transform:translateX(-100%);transition:transform .25s;box-shadow:0 0 30px rgba(0,0,0,.25)}
+  aside.open{transform:none}
+  main{padding:64px 16px 60px}
+  #menuBtn{display:block;position:fixed;top:12px;left:12px;z-index:21}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .disc>summary .meta{display:none}
+}
+@media print{aside,#menuBtn,.tools,.fc,.train{display:none}.layout{display:block}.disc-body{display:block}}
+</style>
+</head>
+<body>
+<button id="menuBtn" aria-label="Abrir menu">☰ Menu</button>
+<div class="layout">
+  <aside id="side">
+    <h1>Estudo Tech Management</h1>
+    <div class="sub">Guia de estudos pessoal · 5 fases · 10 meses</div>
+    <div class="progress"><i id="pbar"></i></div>
+    <div class="ptext" id="ptext"></div>
+    <input id="search" type="search" placeholder="Buscar tópico, conceito…">
+    <nav id="nav"></nav>
+    <div class="tools">
+      <button id="cards" class="btn-primary">Flashcards</button>
+      <button id="expand">Expandir tudo</button>
+      <button id="collapse">Recolher</button>
+      <button id="theme">Tema</button>
+      <button id="export">Exportar progresso</button>
+      <button id="import">Importar progresso</button>
+      <input id="importFile" type="file" accept="application/json,.json" class="hidden">
+      <button id="reset">Zerar progresso</button>
+    </div>
+  </aside>
+  <main>
+    <section class="hero">
+      <h2>Plano de estudos — Tech Management</h2>
+      <p>Conteúdo organizado em 5 fases de estudo sobre gestão de tecnologia. Cada disciplina traz explicação dos tópicos, pontos-chave, exercício prático, perguntas de revisão e espaço para suas anotações, além das referências de onde cada conteúdo foi tirado. Marque os tópicos conforme estuda — o progresso fica salvo neste navegador.</p>
+      <p class="note">Fontes: a ementa (fases, disciplinas e tópicos) vem da <a href="https://postech.fiap.com.br/curso/tech-management/" target="_blank" rel="noopener">página oficial da Pós Tech em Tech Management — FIAP</a>. As explicações são um resumo feito a partir das obras, normas e documentos oficiais listados em "Referências e fontes" no fim de cada disciplina. Não é o material oficial das aulas da FIAP.</p>
+      <p class="note">Estrutura do curso, segundo a mesma página: 360 horas em 5 fases ao longo de 10 meses. Cada fase termina com um Tech Challenge e uma micro-certificação, e o curso fecha com uma atividade presencial individual e um hackathon.</p>
+      <div class="stats" id="stats"></div>
+    </section>
+    <div id="content"></div>
+  </main>
+</div>
+<div id="fc" class="fc hidden" role="dialog" aria-modal="true" aria-labelledby="fcTitle">
+  <div class="fc-box" tabindex="-1">
+    <div class="fc-top"><h2 id="fcTitle">Flashcards</h2><button data-fc="close" aria-label="Fechar">✕</button></div>
+    <div id="fcBody"></div>
+  </div>
+</div>
+
+<script>window.CURSO = [];</script>
+<script src="fases/fase-01.js"></script>
+<script src="fases/fase-02.js"></script>
+<script src="fases/fase-03.js"></script>
+<script src="fases/fase-04.js"></script>
+<script src="fases/fase-05.js"></script>
+<script src="glossario.js"></script>
+<script>
+(function(){
+  const store = {
+    get(k, d){ try{ const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } },
+    set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  };
+  const done = store.get('tm-done', {});
+  const notes = store.get('tm-notes', {});
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+
+  const fases = window.CURSO.sort((a,b)=>a.n-b.n);
+  const content = document.getElementById('content');
+  const nav = document.getElementById('nav');
+  let totalTopics = 0, totalDisc = 0;
+  const cards = [];
+
+  fases.forEach(f => {
+    const fc = `var(--f${f.n})`;
+    const sec = document.createElement('section');
+    sec.className = 'fase-sec'; sec.id = 'fase-' + f.n; sec.style.setProperty('--fc', fc);
+    let html = `<div class="fase-head"><div class="tag">Fase ${String(f.n).padStart(2,'0')} · ${esc(f.periodo)}</div><h2>${esc(f.titulo)}</h2><p>${esc(f.descricao)}</p></div>`;
+    const navItems = [];
+    f.disciplinas.forEach((d, di) => {
+      totalDisc++;
+      const did = `f${f.n}-${slug(d.titulo)}`;
+      navItems.push({did, titulo:d.titulo, n:d.topicos.length});
+      html += `<details class="disc" id="${did}" data-disc="${did}"><summary><h3>${esc(d.titulo)}</h3><span class="meta" data-meta="${did}"></span><span class="chev">▸</span></summary><div class="disc-body"><p class="resumo">${d.resumo}</p>`;
+      d.topicos.forEach((t, ti) => {
+        totalTopics++;
+        const tid = `${did}-${ti}`;
+        html += `<div class="topic${done[tid]?' done':''}" data-tid="${tid}"><label class="topic-h"><input type="checkbox" data-check="${tid}"${done[tid]?' checked':''}><h4>${esc(t.t)}</h4></label><div class="c">${t.c}</div>${t.k&&t.k.length?`<ul>${t.k.map(x=>`<li>${x}</li>`).join('')}</ul>`:''}</div>`;
+      });
+      if (d.pratica) html += `<div class="box pratica"><h5>Exercício prático</h5>${d.pratica}</div>`;
+      if (d.perguntas && d.perguntas.length) {
+        d.perguntas.forEach((p, qi) => cards.push({id:`${did}-q${qi}`, did, fase:f.n, disc:d.titulo, q:p[0], a:p[1]}));
+        html += `<div class="box quiz"><h5>Perguntas de revisão (clique para ver a resposta)</h5>${d.perguntas.map(p=>`<details><summary>${p[0]}</summary><p>${p[1]}</p></details>`).join('')}<button class="train" data-train="${did}">Treinar com flashcards</button></div>`;
+      }
+      if (d.aprofundamento && d.aprofundamento.length) html += `<div class="box pratica"><h5>Aprofundamento (gratuito)</h5><ul>${d.aprofundamento.map(r=>`<li><a href="${r[1]}" target="_blank" rel="noopener">${r[0]}</a>${r[2]?` — ${r[2]}`:''}</li>`).join('')}</ul></div>`;
+      if (d.referencias && d.referencias.length) html += `<div class="box refs"><h5>Referências e fontes</h5><ul>${d.referencias.map(r=>`<li>${r[1]?`<a href="${r[1]}" target="_blank" rel="noopener">${r[0]}</a>`:r[0]}</li>`).join('')}</ul></div>`;
+      html += `<div class="box"><h5>Minhas anotações</h5><textarea data-note="${did}" placeholder="Escreva aqui seus resumos, dúvidas e ideias…">${esc(notes[did]||'')}</textarea></div></div></details>`;
+    });
+    if (f.challenge) html += `<div class="challenge"><h4>Tech Challenge — Fase ${f.n}</h4><p>${f.challenge.intro}</p><ol>${f.challenge.entregas.map(e=>`<li>${e}</li>`).join('')}</ol></div>`;
+    sec.innerHTML = html;
+    content.appendChild(sec);
+    nav.insertAdjacentHTML('beforeend', `<div class="fase" style="color:${fc}"><a href="#fase-${f.n}" style="padding:0;color:inherit">Fase ${f.n} · ${esc(f.titulo)}</a></div>` +
+      navItems.map(i=>`<a href="#${i.did}" data-nav="${i.did}">${esc(i.titulo)}<small data-count="${i.did}"></small></a>`).join(''));
+  });
+
+  // Glossário: seção no fim da página, filtrável e com links para as disciplinas.
+  const discTitle = {};
+  fases.forEach(f => f.disciplinas.forEach(d => { discTitle[`f${f.n}-${slug(d.titulo)}`] = d.titulo; }));
+  const gloss = (window.GLOSSARIO || []).slice().sort((a, b) => a[0].localeCompare(b[0], 'pt-BR', {sensitivity:'base'}));
+  if (gloss.length) {
+    const letterOf = t => { const c = t.normalize('NFD')[0].toUpperCase(); return /[A-Z]/.test(c) ? c : '#'; };
+    const letters = [...new Set(gloss.map(g => letterOf(g[0])))];
+    let gh = `<div class="fase-head" style="--fc:var(--accent)"><div class="tag">Consulta</div><h2>Glossário</h2><p>${gloss.length} termos e siglas do curso. Cada definição resume o que está na disciplina indicada, onde ficam a explicação completa e as fontes.</p></div>
+      <input id="gsearch" type="search" placeholder="Filtrar termos…" aria-label="Filtrar termos do glossário">
+      <div class="g-letters">${letters.map(l => `<a href="#g-${l === '#' ? 'num' : l}">${l}</a>`).join('')}</div><dl class="gloss">`;
+    letters.forEach(l => {
+      gh += `<div class="g-letter" id="g-${l === '#' ? 'num' : l}" data-gl="${l}">${l}</div>`;
+      gloss.filter(g => letterOf(g[0]) === l).forEach(g => {
+        const links = (g[2] || []).filter(id => discTitle[id]).map(id => `<a href="#${id}" data-goto="${id}">${esc(discTitle[id])}</a>`).join(' · ');
+        gh += `<div class="g-item" data-gl="${l}"><dt>${esc(g[0])}</dt><dd>${g[1]}${links ? `<span class="g-links">Veja em: ${links}</span>` : ''}</dd></div>`;
+      });
+    });
+    gh += `</dl><p class="g-empty hidden" id="gEmpty">Nenhum termo encontrado.</p>`;
+    const gsec = document.createElement('section');
+    gsec.className = 'fase-sec'; gsec.id = 'glossario'; gsec.innerHTML = gh;
+    content.appendChild(gsec);
+    nav.insertAdjacentHTML('beforeend', `<div class="fase" style="color:var(--accent)"><a href="#glossario" style="padding:0;color:inherit">Glossário · ${gloss.length} termos</a></div>`);
+  }
+  function filterGloss(q){
+    const items = document.querySelectorAll('.g-item'); if (!items.length) return;
+    const shown = {};
+    items.forEach(it => { const hit = !q || it.textContent.toLowerCase().includes(q); it.classList.toggle('hidden', !hit); if (hit) shown[it.dataset.gl] = 1; });
+    document.querySelectorAll('.g-letter').forEach(h => h.classList.toggle('hidden', !shown[h.dataset.gl]));
+    document.getElementById('gEmpty').classList.toggle('hidden', Object.keys(shown).length > 0);
+  }
+
+  document.getElementById('stats').innerHTML =
+    `<div class="stat"><b>${fases.length}</b><span>fases</span></div><div class="stat"><b>${totalDisc}</b><span>disciplinas</span></div><div class="stat"><b>${totalTopics}</b><span>tópicos</span></div><div class="stat"><b id="sdone">0</b><span>tópicos concluídos</span></div>`;
+
+  function refresh(){
+    let n = 0;
+    document.querySelectorAll('.disc').forEach(d => {
+      const did = d.dataset.disc;
+      const boxes = d.querySelectorAll('[data-check]');
+      const c = [...boxes].filter(b=>b.checked).length; n += c;
+      const txt = `${c}/${boxes.length}`;
+      d.querySelector(`[data-meta="${did}"]`).textContent = txt + ' concluídos';
+      const nc = document.querySelector(`[data-count="${did}"]`);
+      nc.textContent = txt;
+      nc.parentElement.classList.toggle('done', c === boxes.length);
+    });
+    const pct = totalTopics ? Math.round(n/totalTopics*100) : 0;
+    document.getElementById('pbar').style.width = pct + '%';
+    document.getElementById('ptext').textContent = `${n} de ${totalTopics} tópicos · ${pct}%`;
+    document.getElementById('sdone').textContent = n;
+  }
+  refresh();
+
+  content.addEventListener('change', e => {
+    const id = e.target.dataset.check; if (!id) return;
+    if (e.target.checked) done[id] = 1; else delete done[id];
+    e.target.closest('.topic').classList.toggle('done', e.target.checked);
+    store.set('tm-done', done); refresh();
+  });
+  let noteTimer;
+  content.addEventListener('input', e => {
+    const id = e.target.dataset.note; if (!id) return;
+    notes[id] = e.target.value; clearTimeout(noteTimer);
+    noteTimer = setTimeout(()=>store.set('tm-notes', notes), 300);
+  });
+
+  const side = document.getElementById('side');
+  document.getElementById('menuBtn').onclick = () => side.classList.toggle('open');
+  nav.addEventListener('click', e => {
+    const a = e.target.closest('a[data-nav]'); side.classList.remove('open');
+    if (a) { const d = document.getElementById(a.dataset.nav); if (d) d.open = true; }
+  });
+  document.getElementById('expand').onclick = () => document.querySelectorAll('.disc').forEach(d=>d.open=true);
+  document.getElementById('collapse').onclick = () => document.querySelectorAll('.disc').forEach(d=>d.open=false);
+  document.getElementById('reset').onclick = () => {
+    if (!window.confirm('Zerar todo o progresso marcado? (as anotações e os flashcards são mantidos)')) return;
+    Object.keys(done).forEach(k=>delete done[k]); store.set('tm-done', done);
+    document.querySelectorAll('[data-check]').forEach(b=>{b.checked=false;b.closest('.topic').classList.remove('done')}); refresh();
+  };
+  document.getElementById('export').onclick = () => {
+    const blob = new Blob([JSON.stringify({done, notes, cards: cardStats}, null, 2)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'tech-management-progresso.json'; a.click();
+  };
+  const importFile = document.getElementById('importFile');
+  document.getElementById('import').onclick = () => importFile.click();
+  importFile.onchange = () => {
+    const file = importFile.files[0]; importFile.value = ''; if (!file) return;
+    file.text().then(txt => {
+      const data = JSON.parse(txt);
+      const obj = v => v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+      const pick = (src, ok) => Object.fromEntries(Object.entries(obj(src)).filter(([, v]) => ok(v)));
+      const d = pick(data.done, v => v === 1), n = pick(data.notes, v => typeof v === 'string'),
+            c = pick(data.cards, v => v && typeof v.ok === 'number' && typeof v.err === 'number' && (v.last === 'ok' || v.last === 'err'));
+      if (!Object.keys(d).length && !Object.keys(n).length && !Object.keys(c).length) throw new Error('vazio');
+      if (!window.confirm(`Substituir o que está salvo neste navegador pelo arquivo?\n\n${Object.keys(d).length} tópicos concluídos · ${Object.keys(n).length} anotações · ${Object.keys(c).length} flashcards respondidos`)) return;
+      store.set('tm-done', d); store.set('tm-notes', n); store.set('tm-cards', c);
+      location.reload();
+    }).catch(() => window.alert('Não foi possível ler o arquivo. Use um JSON gerado por "Exportar progresso".'));
+  };
+  const root = document.documentElement;
+  const savedTheme = store.get('tm-theme', null); if (savedTheme) root.dataset.theme = savedTheme;
+  document.getElementById('theme').onclick = () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = dark ? 'light' : 'dark'; store.set('tm-theme', root.dataset.theme);
+  };
+
+  const search = document.getElementById('search');
+  search.addEventListener('input', () => {
+    const q = search.value.trim().toLowerCase();
+    document.querySelectorAll('.disc').forEach(d => {
+      if (!q) { d.classList.remove('hidden'); d.querySelectorAll('.topic').forEach(t=>t.classList.remove('hidden')); return; }
+      const inTitle = d.querySelector('summary h3').textContent.toLowerCase().includes(q);
+      let any = false;
+      d.querySelectorAll('.topic').forEach(t => { const hit = inTitle || t.textContent.toLowerCase().includes(q); t.classList.toggle('hidden', !hit); any = any || hit; });
+      d.classList.toggle('hidden', !any); if (any) d.open = true;
+    });
+    filterGloss(q);
+  });
+  const gsearch = document.getElementById('gsearch');
+  if (gsearch) gsearch.addEventListener('input', () => filterGloss(gsearch.value.trim().toLowerCase()));
+  content.addEventListener('click', e => {
+    const a = e.target.closest('a[data-goto]'); if (!a) return;
+    const d = document.getElementById(a.dataset.goto); if (d) { d.classList.remove('hidden'); d.open = true; }
+  });
+
+  // Flashcards: estatística por pergunta em tm-cards ({id: {ok, err, last}}).
+  // As erradas na última tentativa vêm primeiro, depois as nunca vistas.
+  const cardStats = store.get('tm-cards', {});
+  const fc = document.getElementById('fc'), fcBox = fc.querySelector('.fc-box'), fcBody = document.getElementById('fcBody');
+  const opt = { scope:'all', filter:'all', size:'20' };
+  let deck = [], pos = 0, revealed = false, mode = 'setup', sessionOk = 0, sessionErr = [], lastFocus = null;
+
+  const scopeOptions = `<option value="all">Todas as disciplinas</option>` + fases.map(f =>
+    `<optgroup label="Fase ${f.n} · ${esc(f.titulo)}"><option value="f${f.n}">Toda a Fase ${f.n}</option>` +
+    f.disciplinas.map(d => `<option value="f${f.n}-${slug(d.titulo)}">${esc(d.titulo)}</option>`).join('') + `</optgroup>`).join('');
+  const inScope = (c, s) => s === 'all' || s === 'f' + c.fase || s === c.did;
+  const weight = c => { const s = cardStats[c.id]; return !s ? 1 : s.last === 'err' ? 0 : 2; };
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  function buildDeck(){
+    let pool = cards.filter(c => inScope(c, opt.scope));
+    if (opt.filter === 'new') pool = pool.filter(c => weight(c) < 2);
+    if (opt.filter === 'err') pool = pool.filter(c => weight(c) === 0);
+    pool = shuffle(pool).sort((a, b) => weight(a) - weight(b));
+    return opt.size === 'all' ? pool : pool.slice(0, +opt.size);
+  }
+  function summary(){
+    const pool = cards.filter(c => inScope(c, opt.scope));
+    const ok = pool.filter(c => weight(c) === 2).length, err = pool.filter(c => weight(c) === 0).length;
+    return `${pool.length} perguntas · ${ok} acertadas na última vez · ${err} erradas · ${pool.length - ok - err} ainda não vistas`;
+  }
+  function openFc(){ lastFocus = document.activeElement; fc.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+  function closeFc(){ fc.classList.add('hidden'); document.body.style.overflow = ''; if (lastFocus) lastFocus.focus(); }
+
+  function showSetup(){
+    mode = 'setup';
+    fcBody.innerHTML = `<p class="fc-help">Responda de cabeça antes de abrir a resposta e marque se acertou. As perguntas que você errar voltam primeiro nas próximas sessões.</p>
+      <label class="fc-field">Conteúdo<select id="fcScope">${scopeOptions}</select></label>
+      <label class="fc-field">Quais perguntas<select id="fcFilter"><option value="all">Todas (erradas e novas primeiro)</option><option value="new">Só as que errei ou ainda não vi</option><option value="err">Só as que errei</option></select></label>
+      <label class="fc-field">Quantidade<select id="fcSize"><option value="10">10</option><option value="20">20</option><option value="all">Todas</option></select></label>
+      <div class="fc-sum" id="fcSum">${summary()}</div>
+      <div class="fc-actions"><button class="btn-primary" data-fc="start">Começar</button><button data-fc="wipe">Zerar estatísticas dos flashcards</button></div>`;
+    ['scope', 'filter', 'size'].forEach(k => {
+      const el = document.getElementById('fc' + k[0].toUpperCase() + k.slice(1));
+      el.value = opt[k];
+      el.onchange = () => { opt[k] = el.value; document.getElementById('fcSum').textContent = summary(); };
+    });
+    document.getElementById('fcScope').focus();
+  }
+  function start(){
+    deck = buildDeck();
+    if (!deck.length) { document.getElementById('fcSum').textContent = 'Nenhuma pergunta com esse filtro. Escolha outra opção.'; return; }
+    pos = 0; sessionOk = 0; sessionErr = []; showCard();
+  }
+  function showCard(){
+    mode = 'card'; revealed = false;
+    const c = deck[pos];
+    fcBody.innerHTML = `<div class="fc-meta"><span>Fase ${c.fase} · ${esc(c.disc)}</span><span>${pos + 1} de ${deck.length}</span></div>
+      <div class="fc-bar"><i style="width:${pos / deck.length * 100}%"></i></div>
+      <div class="fc-q">${c.q}</div>
+      <div class="fc-a hidden" id="fcA">${c.a}</div>
+      <div class="fc-actions" id="fcAct"><button class="btn-primary" data-fc="reveal">Mostrar resposta<kbd>espaço</kbd></button></div>`;
+    fcBox.focus();
+  }
+  function reveal(){
+    if (revealed) return; revealed = true;
+    document.getElementById('fcA').classList.remove('hidden');
+    document.getElementById('fcAct').innerHTML = `<button class="btn-err" data-fc="err">Errei<kbd>1</kbd></button><button class="btn-ok" data-fc="ok">Acertei<kbd>2</kbd></button>`;
+    fcBox.focus();
+  }
+  function mark(res){
+    if (!revealed) return;
+    const c = deck[pos], s = cardStats[c.id] || {ok:0, err:0};
+    s[res]++; s.last = res; cardStats[c.id] = s; store.set('tm-cards', cardStats);
+    if (res === 'ok') sessionOk++; else sessionErr.push(c);
+    if (++pos < deck.length) showCard(); else showEnd();
+  }
+  function showEnd(){
+    mode = 'end';
+    const n = sessionErr.length;
+    fcBody.innerHTML = `<div class="fc-q">Você acertou ${sessionOk} de ${deck.length}.</div>
+      <p class="fc-help">${n ? `Errou ${n}. Revisar agora ajuda a fixar; elas também voltam primeiro na próxima sessão.` : 'Acertou todas. Volte daqui a alguns dias para revisar: o espaçamento ajuda a memória.'}</p>
+      <div class="fc-actions">${n ? `<button class="btn-primary" data-fc="retry">Revisar as ${n} erradas</button>` : ''}<button data-fc="setup">Nova sessão</button><button data-fc="close">Fechar</button></div>`;
+    fcBox.focus();
+  }
+
+  document.getElementById('cards').onclick = () => { side.classList.remove('open'); openFc(); showSetup(); };
+  content.addEventListener('click', e => {
+    const b = e.target.closest('[data-train]'); if (!b) return;
+    Object.assign(opt, {scope: b.dataset.train, filter: 'all', size: 'all'}); openFc(); start();
+  });
+  fc.addEventListener('click', e => {
+    if (e.target === fc) return closeFc();
+    const b = e.target.closest('[data-fc]'); if (!b) return;
+    const a = b.dataset.fc;
+    if (a === 'close') closeFc();
+    else if (a === 'start') start();
+    else if (a === 'setup') showSetup();
+    else if (a === 'reveal') reveal();
+    else if (a === 'ok' || a === 'err') mark(a);
+    else if (a === 'wipe') {
+      if (!window.confirm('Apagar o histórico de acertos e erros de todos os flashcards? (tópicos e anotações são mantidos)')) return;
+      Object.keys(cardStats).forEach(k => delete cardStats[k]); store.set('tm-cards', cardStats);
+      document.getElementById('fcSum').textContent = summary();
+    }
+    else if (a === 'retry') { deck = shuffle(sessionErr.slice()); pos = 0; sessionOk = 0; sessionErr = []; showCard(); }
+  });
+  document.addEventListener('keydown', e => {
+    if (fc.classList.contains('hidden')) return;
+    if (e.key === 'Escape') return closeFc();
+    if (mode !== 'card' || e.target.closest('button, select')) return;
+    if ((e.key === ' ' || e.key === 'Enter') && !revealed) { e.preventDefault(); reveal(); }
+    else if (e.key === '1' && revealed) mark('err');
+    else if (e.key === '2' && revealed) mark('ok');
+  });
+})();
+</script>
+</body>
+</html>
